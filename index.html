@@ -1,0 +1,819 @@
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS_3D // Industrial & Tactical Modeling</title>
+    <!-- Шрифти Google Fonts (JetBrains Mono та Syne для техно-стилю) -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome для іконок -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #050505;
+            --panel-bg: rgba(15, 15, 15, 0.85);
+            --border-color: #222222;
+            --accent-red: #ff003c;
+            --accent-glow: rgba(255, 0, 60, 0.4);
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-display: 'Syne', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-red) var(--bg-color);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Техно-сітка на фоні */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #fff;
+        }
+
+        .logo span {
+            color: var(--accent-red);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            margin-left: 30px;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-red);
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Герой-секція */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 0 10%;
+            position: relative;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 span {
+            color: var(--accent-red);
+            position: relative;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            max-width: 600px;
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            background: transparent;
+            color: #fff;
+            border: 2px solid var(--accent-red);
+            padding: 15px 35px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            position: relative;
+            transition: 0.3s;
+            box-shadow: 0 0 15px rgba(255, 0, 60, 0.2);
+        }
+
+        .btn:hover {
+            background: var(--accent-red);
+            box-shadow: 0 0 25px var(--accent-glow);
+            color: #000;
+        }
+
+        /* Основний контейнер */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px;
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2.2rem;
+            margin-bottom: 50px;
+            text-transform: uppercase;
+            border-left: 4px solid var(--accent-red);
+            padding-left: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title span {
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+
+        /* Картки / Сітка послуг та цін */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            position: relative;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--accent-red);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .card h3 {
+            font-family: var(--font-display);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .card .price {
+            font-size: 1.5rem;
+            color: var(--accent-red);
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .card ul {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .card ul li {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .card ul li i {
+            color: var(--accent-red);
+            margin-right: 10px;
+            font-size: 0.8rem;
+        }
+
+        /* Військовий спецроздел */
+        .military-section {
+            background: linear-gradient(135deg, #0a0506 0%, #15080b 100%);
+            border: 1px solid rgba(255, 0, 60, 0.3);
+            border-left: 6px solid var(--accent-red);
+            padding: 40px;
+            margin-top: 80px;
+            position: relative;
+        }
+
+        .military-badge {
+            background: var(--accent-red);
+            color: #fff;
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        /* Калькулятор замовлень */
+        .calculator {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            margin-top: 80px;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media(max-width: 768px) {
+            .calc-grid { grid-template-columns: 1fr; }
+        }
+
+        .calc-group {
+            margin-bottom: 25px;
+        }
+
+        .calc-group label {
+            display: block;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .calc-group select, .calc-group input, .calc-group textarea {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px;
+            font-family: var(--font-mono);
+            font-size: 0.95rem;
+        }
+
+        .calc-group select:focus, .calc-group input:focus {
+            border-color: var(--accent-red);
+            outline: none;
+        }
+
+        .total-box {
+            background: #000;
+            border: 1px solid var(--accent-red);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .total-price {
+            font-size: 2.5rem;
+            font-family: var(--font-display);
+            color: var(--accent-red);
+            margin: 20px 0;
+        }
+
+        /* Футер */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding: 40px 5%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Спливаюче повідомлення */
+        .toast {
+            position: fixed;
+            bottom: 30px; right: 30px;
+            background: #111;
+            border-left: 4px solid var(--accent-red);
+            padding: 20px;
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+            display: none;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ===== КАТАЛОГ МОДЕЛЕЙ ===== */
+        .catalog-toolbar {
+            display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px;
+        }
+        .catalog-filter {
+            background:#090909; color:#fff; border:1px solid var(--border-color);
+            padding:12px 14px; font-family:var(--font-mono); min-width:220px;
+        }
+        .catalog-filter:focus { outline:none; border-color:var(--accent-red); }
+        .model-card { cursor:pointer; min-height:260px; display:flex; flex-direction:column; }
+        .model-icon {
+            width:58px;height:58px;display:grid;place-items:center;margin-bottom:20px;
+            border:1px solid #333;background:#090909;color:var(--accent-red);font-size:22px;
+        }
+        .model-card p { color:var(--text-muted); font-size:.86rem; line-height:1.6; flex:1; }
+        .model-meta { display:flex; justify-content:space-between; gap:10px; margin-top:20px; color:#aaa; font-size:.78rem; }
+        .model-meta b { color:var(--accent-red); }
+        .model-card .open-model { margin-top:18px; color:#fff; font-size:.8rem; text-transform:uppercase; }
+        .modal-backdrop {
+            position:fixed; inset:0; background:rgba(0,0,0,.82); backdrop-filter:blur(8px);
+            display:none; align-items:center; justify-content:center; z-index:3000; padding:20px;
+        }
+        .modal-backdrop.open { display:flex; }
+        .model-modal {
+            width:min(760px,100%); max-height:90vh; overflow:auto; background:#0a0a0a;
+            border:1px solid #333; box-shadow:0 20px 80px rgba(0,0,0,.9);
+            animation:modalIn .22s ease;
+        }
+        @keyframes modalIn { from {transform:translateY(18px) scale(.98);opacity:0} to {transform:none;opacity:1} }
+        .modal-head { display:flex;justify-content:space-between;align-items:center;padding:24px;border-bottom:1px solid #222; }
+        .modal-head h3 { font-family:var(--font-display); font-size:1.45rem; }
+        .modal-close { background:none;border:0;color:#888;font-size:1.5rem;cursor:pointer; }
+        .modal-close:hover { color:var(--accent-red); }
+        .modal-body { padding:28px; }
+        .model-specs { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:22px 0; }
+        .spec { border:1px solid #222; padding:14px; background:#070707; }
+        .spec small { display:block;color:#777;text-transform:uppercase;font-size:.68rem;margin-bottom:6px; }
+        .spec strong { font-size:.9rem; }
+        .modal-note { border-left:3px solid var(--accent-red); padding:14px 16px; background:#10070a; color:#bbb; line-height:1.55; font-size:.82rem; }
+        .tag { display:inline-block; padding:4px 8px; border:1px solid #333; color:#aaa; font-size:.68rem; margin:3px 3px 0 0; }
+        @media(max-width:600px) { .model-specs{grid-template-columns:1fr}.modal-body{padding:20px}.model-modal{max-height:94vh} }
+
+    </style>
+</head>
+<body>
+
+    <!-- Хедера -->
+    <header>
+        <div class="logo">NEXUS<span>_3D</span></div>
+        <nav>
+            <a href="#services">Ціни</a>
+            <a href="#military">Military Tech</a>
+            <a href="#catalog">Каталог моделей</a>
+            <a href="#calc">Калькулятор</a>
+        </nav>
+    </header>
+
+    <!-- Головний екран -->
+    <section class="hero">
+        <p>// ПРОМЕЖУТОК МІЖ ЦИФРОВИМ ТА ФІЗИЧНИМ СВІТОМ</p>
+        <h1>Точне 3D-моделювання та <span>аматорський друк</span></h1>
+        <p>Створення інженерних моделей, корпусів, шестерень та тактичних аксесуарів на побутових FDM та Resin принтерах за доступними цінами в гривнях.</p>
+        <a href="#calc" class="btn">Розрахувати замовлення</a>
+    </section>
+
+    <!-- Основний контент -->
+    <div class="container">
+
+        <!-- Розділ: Побутовий та технічний 3D-друк (Ціни в гривнях) -->
+        <div id="services">
+            <div class="section-title">
+                Прайс-лист послуг <span>[UAH_PRICING]</span>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>Базовий проект</h3>
+                    <span class="price">від 300 грн</span>
+                    <ul>
+                        <li><i class="fa-solid fa-chevron-right"></i> Прості деталі, органайзери, чохли</li>
+                        <li><i class="fa-solid fa-chevron-right"></i> Використання стандартного пластику (PLA/PETG)</li>
+                        <li><i class="fa-solid fa-chevron-right"></i> Термін: 1–2 дні</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Pro / Механіка</h3>
+                    <span class="price">від 1 200 грн</span>
+                    <ul>
+                        <li><i class="fa-solid fa-chevron-right"></i> Шестерні, складні корпуси, адаптери</li>
+                        <li><i class="fa-solid fa-chevron-right"></i> Інженерний пластик (ABS, Nylon)</li>
+                        <li><i class="fa-solid fa-chevron-right"></i> Термін: 3–5 днів</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Моделювання з нуля</h3>
+                    <span class="price">500 грн / год</span>
+                    <ul>
+                        <li><i class="fa-solid fa-chevron-right"></i> Розробка 3D-моделі за вашим ескізом чи кресленням</li>
+                        <li><i class="fa-solid fa-chevron-right"></i> Експорт у STEP, STL, OBJ</li>
+                        <li><i class="fa-solid fa-chevron-right"></i> Підготовка під друк</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Військовий спецрозділ (Military Tech) -->
+        <div id="military" class="military-section">
+            <div class="military-badge">FIELD / INDUSTRIAL</div>
+            <div class="section-title" style="border-left-color: #ff003c; margin-bottom: 30px;">
+                Field, UAV & Industrial <span>[FIELD_READY]</span>
+            </div>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">
+                Виготовлення надійних польових, електронних та авіамодельних компонентів з ударостійких матеріалів (PETG, ABS, нейлон, карбонове волокно). Матове виконання без відблисків (олива, койот, чорний).
+            </p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>Корпуси для батарей</h3>
+                    <span class="price">400 – 1 200 ₴</span>
+                    <ul>
+                        <li><i class="fa-solid fa-crosshairs"></i> Захисні бокси для 18650 / 21700</li>
+                        <li><i class="fa-solid fa-crosshairs"></i> Ударостійкі збірки живлення та PowerBank</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Кріплення зв'язку й оптики</h3>
+                    <span class="price">250 – 700 ₴</span>
+                    <ul>
+                        <li><i class="fa-solid fa-crosshairs"></i> Кронштейни під рейки Пікатінні</li>
+                        <li><i class="fa-solid fa-crosshairs"></i> Перехідники для рацій, приладів та тепловізорів</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>Тактична фурнітура</h3>
+                    <span class="price">80 – 250 ₴</span>
+                    <ul>
+                        <li><i class="fa-solid fa-crosshairs"></i> Фастекси, кліпси, тримачі турнікетів</li>
+                        <li><i class="fa-solid fa-crosshairs"></i> Адаптери для підсумків Molle, ЗІП для БПЛА</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ===== КАТАЛОГ МОДЕЛЕЙ ===== -->
+        <section id="catalog" style="margin-top:100px;">
+            <div class="section-title">
+                Каталог моделей <span>[MODEL_LIBRARY]</span>
+            </div>
+
+            <div class="catalog-toolbar">
+                <select class="catalog-filter" id="categoryFilter" onchange="renderCatalog()">
+                    <option value="all">Усі категорії</option>
+                    <option value="uav">БПЛА / авіамоделі</option>
+                    <option value="power">Живлення та PowerBank</option>
+                    <option value="electronics">Корпуси електроніки</option>
+                    <option value="field">Польові аксесуари</option>
+                    <option value="civil">Цивільні вироби</option>
+                </select>
+                <input class="catalog-filter" id="modelSearch" oninput="renderCatalog()" placeholder="Пошук моделі...">
+            </div>
+
+            <div class="grid" id="modelGrid"></div>
+        </section>
+
+        <div class="modal-backdrop" id="modelModal" onclick="closeModel(event)">
+            <div class="model-modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
+                <div class="modal-head">
+                    <h3 id="modalTitle">MODEL</h3>
+                    <button class="modal-close" onclick="closeModel()" aria-label="Закрити">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalTags"></div>
+                    <p id="modalDescription" style="color:#aaa;line-height:1.7;margin-top:16px;"></p>
+                    <div class="model-specs" id="modalSpecs"></div>
+                    <div class="modal-note">
+                        Модель виготовляється після узгодження розмірів, матеріалу та призначення.
+                        Для виробів, пов'язаних із безпекою, сумісність і міцність потрібно перевіряти окремо.
+                    </div>
+                    <button class="btn" style="width:100%;margin-top:22px;" onclick="orderCurrentModel()">
+                        Замовити цю модель
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Інтерактивний калькулятор та форма замовлення -->
+        <div id="calc" class="calculator">
+            <div class="section-title">
+                Калькулятор вартості <span>[ESTIMATE_TOOL]</span>
+            </div>
+            
+            <div class="calc-grid">
+                <div>
+                    <div class="calc-group">
+                        <label>Виберіть модель / послугу</label>
+                        <select id="serviceType" onchange="calculatePrice()">
+                            <optgroup label="--- ПОБУТОВІ ТА ІНЖЕНЕРНІ ВИРОБИ ---">
+                                <option value="300">Побутова деталь / Органайзер / Підставка (від 300 грн)</option>
+                                <option value="450">Корпус для електроніки (Arduino, плати) (від 450 грн)</option>
+                                <option value="1200">Технічний корпус / Механізм / Шестерня (від 1 200 грн)</option>
+                                <option value="350">Абажур, ваза, кашпо (дизайн у вазі) (від 350 грн)</option>
+                                <option value="400">Автозапчастина / Кліпса / Заглушка (від 400 грн)</option>
+                                <option value="350">Ігрова фігурка / Мініатюра / D&D (від 350 грн)</option>
+                            </optgroup>
+
+                            <optgroup label="--- MILITARY TECH / ТАКТИЧНІ ВИРОБИ ---">
+                                <option value="600">Корпус для акумуляторів (18650 / 21700 / PowerBank) (від 600 грн)</option>
+                                <option value="450">Кріплення зв'язку / Рації / Тепловізора (від 450 грн)</option>
+                                <option value="350">Кронштейн на рейку Пікатінні (Picatinny) (від 350 грн)</option>
+                                <option value="250">Захисна кришка оптики / Кожух екрана (від 250 грн)</option>
+                                <option value="150">Тактична фурнітура (Фастекси, кліпси Molle) (від 150 грн)</option>
+                                <option value="800">Корпус або елементи ЗІП для БПЛА / Скиди (від 800 грн)</option>
+                            </optgroup>
+
+                            <optgroup label="--- 3D-МОДЕЛЮВАННЯ ---">
+                                <option value="500">3D-моделювання за кресленням / ескізом (500 грн/год)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="calc-group">
+                        <label>Матеріал / Пластик</label>
+                        <select id="materialType" onchange="calculatePrice()">
+                            <option value="1">PLA / PETG (Стандартний)</option>
+                            <option value="1.4">ABS / Ударостійкий (+40% за складність друку)</option>
+                            <option value="1.8">Nylon / Карбон (Надміцний інженерний)</option>
+                            <option value="1.5">Фотополімерна смола (Деталізована мініатюра)</option>
+                        </select>
+                    </div>
+
+                    <div class="calc-group">
+                        <label>Ваші контакти (Telegram / Телефон)</label>
+                        <input type="text" id="clientContact" placeholder="@username або +380...">
+                    </div>
+                </div>
+
+                <div class="total-box">
+                    <div>
+                        <span style="color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem;">Попередня сума:</span>
+                        <div class="total-price" id="totalPrice">300 ₴</div>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                            *Кінцева ціна може змінюватись в залежності від витрати матеріалу та часу друку.
+                        </p>
+                    </div>
+                    <button class="btn" onclick="submitOrder()" style="width: 100%; text-align: center; margin-top: 20px;">Надіслати замовлення</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <p>NEXUS_3D // Industrial & Tactical Production. Усі права захищені.</p>
+    </footer>
+
+    <!-- Сповіщення (Toast) -->
+    <div class="toast" id="toastMessage">
+        <strong>ЗАМОВЛЕННЯ НАДІСЛАНО!</strong><br>
+        Дані успішно відправлені в Telegram-бот.
+    </div>
+
+
+    <script>
+        const models = [
+            {
+                id:"uav-body", category:"uav", icon:"fa-solid fa-plane-up",
+                title:"Корпус авіамоделі БПЛА",
+                price:"від 1 200 ₴",
+                desc:"Легкий корпус або секційні елементи для цивільних та навчальних авіамоделей. Геометрія готується під конкретну електроніку та спосіб складання.",
+                tags:["UAV","авіамодель","FDM"],
+                specs:[["Матеріали","PETG / ASA / Nylon"],["Формат","секційний"],["Призначення","цивільне / навчальне"],["Підготовка","STL / STEP"]]
+            },
+            {
+                id:"uav-cover", category:"uav", icon:"fa-solid fa-cube",
+                title:"Захисний корпус електроніки БПЛА",
+                price:"від 500 ₴",
+                desc:"Компактний захисний кожух для контролера, телеметрії або іншої бортової електроніки. Передбачаються вентиляція, отвори під роз'єми та кріплення.",
+                tags:["UAV","електроніка","корпус"],
+                specs:[["Матеріали","PETG / ABS / Nylon"],["Вентиляція","за потреби"],["Кріплення","гвинти / стійки"],["Проєкт","за розмірами плати"]]
+            },
+            {
+                id:"battery-18650", category:"power", icon:"fa-solid fa-battery-three-quarters",
+                title:"Корпус акумуляторного блоку 18650",
+                price:"від 450 ₴",
+                desc:"Корпус для портативної збірки живлення з місцем під елементи, плату захисту та роз'єми. Конфігурація визначається під готову електроніку.",
+                tags:["18650","Power","PETG"],
+                specs:[["Основа","18650"],["Матеріали","PETG / ABS / Nylon"],["Формат","індивідуальний"],["Опції","кришка / кріплення"]]
+            },
+            {
+                id:"powerbank", category:"power", icon:"fa-solid fa-bolt",
+                title:"Корпус для PowerBank",
+                price:"від 600 ₴",
+                desc:"Індивідуальний корпус під плату заряджання, акумулятори, USB-C/USB-A та індикатор. Можна зробити рельєф, вентиляцію та сервісну кришку.",
+                tags:["PowerBank","USB-C","корпус"],
+                specs:[["Елементи","18650 / 21700"],["Роз'єми","USB-C / USB-A"],["Матеріали","PETG / ABS"],["Дизайн","за ескізом"]]
+            },
+            {
+                id:"arduino", category:"electronics", icon:"fa-solid fa-microchip",
+                title:"Корпус Arduino / ESP / SBC",
+                price:"від 450 ₴",
+                desc:"Корпус для плат керування, мікроконтролерів та одноплатних комп'ютерів. Отвори під GPIO, живлення, USB та монтажні стійки.",
+                tags:["Arduino","ESP32","SBC"],
+                specs:[["Плати","Arduino / ESP / SBC"],["Матеріали","PLA / PETG / ABS"],["Доступ","повний / сервісний"],["Фіксація","стійки M2/M3"]]
+            },
+            {
+                id:"radio-case", category:"field", icon:"fa-solid fa-tower-broadcast",
+                title:"Захисний кейс для рації / приладу",
+                price:"від 450 ₴",
+                desc:"Компактний захисний корпус або чохол для портативної електроніки, вимірювальних та комунікаційних пристроїв.",
+                tags:["рація","електроніка","field"],
+                specs:[["Захист","удар / пил"],["Матеріали","PETG / TPU"],["Формат","індивідуальний"],["Опції","кришка / ремінець"]]
+            },
+            {
+                id:"tool-organizer", category:"field", icon:"fa-solid fa-screwdriver-wrench",
+                title:"Органайзер для інструментів",
+                price:"від 300 ₴",
+                desc:"Вкладиші, касети та модульні органайзери для електроніки, інструментів, кріплення та дрібних комплектуючих.",
+                tags:["tooling","органайзер","модульний"],
+                specs:[["Матеріали","PLA / PETG"],["Модульність","так"],["Формат","під набір"],["Друк","FDM"]]
+            },
+            {
+                id:"mount-device", category:"field", icon:"fa-solid fa-mobile-screen-button",
+                title:"Кріплення для обладнання",
+                price:"від 250 ₴",
+                desc:"Монтажні кріплення та адаптери для камер, ліхтарів, датчиків, телефонів та іншої електроніки. Не призначені для встановлення зброї.",
+                tags:["mount","adapter","field"],
+                specs:[["Матеріали","PETG / Nylon"],["Навантаження","розрахунок окремо"],["Монтаж","гвинти / стяжки"],["Модель","за розмірами"]]
+            },
+            {
+                id:"car-part", category:"civil", icon:"fa-solid fa-car",
+                title:"Автокріплення / заглушка",
+                price:"від 400 ₴",
+                desc:"Пластикові заглушки, кліпси, органайзери та нескладні замінні елементи салону або побутової техніки.",
+                tags:["auto","civil","replacement"],
+                specs:[["Матеріали","PETG / ABS"],["Модель","за зразком"],["Формат","штучний"],["Фініш","за домовленістю"]]
+            },
+            {
+                id:"home-case", category:"civil", icon:"fa-solid fa-house",
+                title:"Побутовий корпус / органайзер",
+                price:"від 300 ₴",
+                desc:"Корпуси для дрібної електроніки, тримачі, підставки, бокси та органайзери для дому або майстерні.",
+                tags:["home","organizer","civil"],
+                specs:[["Матеріали","PLA / PETG"],["Розмір","індивідуальний"],["Колір","за наявністю"],["Проєкт","STL / CAD"]]
+            }
+        ];
+
+        let currentModel = null;
+
+        function renderCatalog() {
+            const category = document.getElementById("categoryFilter").value;
+            const query = document.getElementById("modelSearch").value.toLowerCase().trim();
+            const grid = document.getElementById("modelGrid");
+
+            const filtered = models.filter(m =>
+                (category === "all" || m.category === category) &&
+                (m.title.toLowerCase().includes(query) || m.tags.join(" ").toLowerCase().includes(query))
+            );
+
+            grid.innerHTML = filtered.length ? filtered.map(m => `
+                <article class="card model-card" onclick="openModel('${m.id}')">
+                    <div class="model-icon"><i class="${m.icon}"></i></div>
+                    <h3>${m.title}</h3>
+                    <span class="price">${m.price}</span>
+                    <p>${m.desc}</p>
+                    <div class="model-meta">
+                        <span>${m.tags.slice(0,2).map(t => `<span class="tag">${t}</span>`).join("")}</span>
+                        <b>ДЕТАЛІ →</b>
+                    </div>
+                </article>
+            `).join("") : `<p style="color:#777;">За вашим запитом моделей не знайдено.</p>`;
+        }
+
+        function openModel(id) {
+            currentModel = models.find(m => m.id === id);
+            if (!currentModel) return;
+
+            document.getElementById("modalTitle").textContent = currentModel.title;
+            document.getElementById("modalDescription").textContent = currentModel.desc;
+            document.getElementById("modalTags").innerHTML =
+                currentModel.tags.map(t => `<span class="tag">${t}</span>`).join("");
+            document.getElementById("modalSpecs").innerHTML =
+                currentModel.specs.map(s => `<div class="spec"><small>${s[0]}</small><strong>${s[1]}</strong></div>`).join("");
+
+            document.getElementById("modelModal").classList.add("open");
+            document.body.style.overflow = "hidden";
+        }
+
+        function closeModel(event) {
+            if (event && event.target !== document.getElementById("modelModal")) return;
+            document.getElementById("modelModal").classList.remove("open");
+            document.body.style.overflow = "";
+        }
+
+        document.addEventListener("keydown", e => {
+            if (e.key === "Escape") closeModel();
+        });
+
+        function orderCurrentModel() {
+            if (!currentModel) return;
+            const select = document.getElementById("serviceType");
+            const option = [...select.options].find(o => o.text.toLowerCase().includes(currentModel.title.toLowerCase().split(" ")[0]));
+            if (option) select.value = option.value;
+            closeModel();
+            document.getElementById("calc").scrollIntoView({behavior:"smooth"});
+            calculatePrice();
+        }
+
+        function calculatePrice() {
+            const serviceBase = parseFloat(document.getElementById('serviceType').value);
+            const materialKoef = parseFloat(document.getElementById('materialType').value);
+            const total = Math.round(serviceBase * materialKoef);
+            document.getElementById('totalPrice').innerText = total + " ₴";
+        }
+
+        async function submitOrder() {
+            const contact = document.getElementById('clientContact').value.trim();
+            if(!contact) {
+                alert("Будь ласка, введіть ваші контакти для зв'язку!");
+                return;
+            }
+
+            const serviceSelect = document.getElementById('serviceType');
+            const serviceName = serviceSelect.options[serviceSelect.selectedIndex].text;
+            const materialSelect = document.getElementById('materialType');
+            const materialName = materialSelect.options[materialSelect.selectedIndex].text;
+            const totalPrice = document.getElementById('totalPrice').innerText;
+
+            // URL вашого Cloudflare Worker / backend.
+            // Токен Telegram-бота НІКОЛИ не вставляємо сюди.
+            const BOT_API_URL = 'https://YOUR-WORKER.workers.dev/order';
+
+            const button = document.querySelector('#calc .total-box .btn');
+            const oldText = button.textContent;
+            button.disabled = true;
+            button.textContent = 'ВІДПРАВЛЕННЯ...';
+
+            try {
+                const response = await fetch(BOT_API_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        service: serviceName,
+                        material: materialName,
+                        total: totalPrice,
+                        contact: contact,
+                        page: location.href
+                    })
+                });
+
+                const result = await response.json().catch(() => ({}));
+
+                if (!response.ok || !result.ok) {
+                    throw new Error(result.error || 'Помилка сервера');
+                }
+
+                const toast = document.getElementById('toastMessage');
+                toast.innerHTML = '<strong>ЗАМОВЛЕННЯ НАДІСЛАНО!</strong><br>Дані успішно відправлені в Telegram.';
+                toast.style.display = 'block';
+                setTimeout(() => toast.style.display = 'none', 4000);
+                document.getElementById('clientContact').value = '';
+            } catch (error) {
+                console.error(error);
+                alert('Не вдалося відправити замовлення. Перевірте адресу Worker та налаштування Telegram-бота.');
+            } finally {
+                button.disabled = false;
+                button.textContent = oldText;
+            }
+        }
+
+        calculatePrice();
+        renderCatalog();
+    </script>
+
+</body>
+</html>
